@@ -2,6 +2,16 @@
 
 O Laravel QJS é um pacote PHP desenvolvido especificamente para aplicações Laravel, mas também é compatível com o Lumen. Ele oferece uma maneira eficiente e intuitiva de gerar relatórios usando uma linguagem baseada na estrutura JSON.
 
+## Uma consulta QJS pode ser interpretada da seguinte maneira:
+```json
+      {
+	"type":"xls",
+	"from":"categories",
+	"where":"created_at,between,$nowsub:30;$now"
+      }
+```
+Nesta consulta, especificamos que um relatório será gerado para todas as categorias (from) do sistema, onde (where) as categorias foram criadas (created_at) dentro do intervalo (between) dos últimos 30 dias até a data atual ($nowsub:30;$now). Os placeholders $nowsub e $now são métodos avançados de data que podem ser utilizados em qualquer filtro, exceto nos operadores in e !in. O prefixo $ indica o uso de um comando interno.
+
 ## Recursos
 
 - **Sintaxe Simples:** A estrutura de uma consulta QJS é simples e não requer uma ordem específica para os comandos.
