@@ -3,6 +3,9 @@
     "description": "Descrição do seu pacote",
     "license": "MIT",
     "version": "1.0.0-stable",
+      "require": {
+        "paulo-leo/laravel-qjs": "dev-main"
+    },
     "autoload": {
         "psr-4": {
             "PauloLeo\\LaravelQJS\\": "src/"
