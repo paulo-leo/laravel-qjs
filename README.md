@@ -2,6 +2,12 @@
 
 O Laravel QJS é um pacote PHP desenvolvido especificamente para aplicações Laravel, mas também é compatível com o Lumen. Ele oferece uma maneira eficiente e intuitiva de gerar relatórios usando uma linguagem baseada na estrutura JSON.
 
+O QJS é uma linguagem declarativa que pode ser escrita tanto em JSON quanto em arrays associativos do PHP. Desenvolvida por Paulo Leonardo Da S. Cassimiro, sua principal finalidade é resolver o desafio recorrente de geração de relatórios. A criação de relatórios é uma tarefa altamente dinâmica, cuja complexidade varia de acordo com o cenário específico. A proposta por trás dessa linguagem é permitir o armazenamento de instruções para a renderização de relatórios em arquivos de texto ou campos de banco de dados, podendo ser chamados em tempo real.
+
+A ideia de construir o QJS usando o formato JSON foi inspirada no uso de estados de componentes em aplicações reativas, como React, Vue, Angular, entre outras. Isso possibilita a construção de relatórios em tempo real, dependendo da implementação. As instruções da linguagem seguem as mesmas regras do SQL comum, com a diferença de que as declarações não precisam seguir uma ordem específica, sendo o único campo obrigatório o from, enquanto os demais refinam o seu relatório.
+
+Em resumo, o QJS pode ser considerado um protocolo para a criação de relatórios baseados em estados JSON.
+
 ## Uma consulta QJS pode ser interpretada da seguinte maneira:
 ```json
       {
