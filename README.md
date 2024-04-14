@@ -14,7 +14,7 @@ O Laravel QJS é um pacote PHP desenvolvido especificamente para aplicações La
   
 - **Conversão Nativa:** O QJS oferece suporte nativo para a conversão dos relatórios gerados em tabelas HTML e XLS.
 
-##Instalação via composer:
+## Instalação via composer:
 
 ```bash
     composer require paulo-leo/laravel-qjs:dev-main
@@ -30,18 +30,19 @@ namespace App\Http\Controllers;
 use PauloLeo\LaravelQJS\QJS;
 
  class ReportController extends Controller{
-   
+
     public function render(Request $request){
 
                $qjs = new QJS;
                $query = $request->all();
                $report = $qjs->render($query);
               
-               if($report->render) 
-                      response()->json($report->data,200);
-               else 
-                 response()->json($report,200);
-    }  
- }
+               if($report->render){
+                    response()->json($report->data,200);
+               }else{
+                    response()->json($report,422);
+               }      
+         }  
+  }
     
 ```
