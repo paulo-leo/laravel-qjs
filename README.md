@@ -5,7 +5,6 @@ O Laravel QJS é um pacote PHP desenvolvido especificamente para aplicações La
 ## Uma consulta QJS pode ser interpretada da seguinte maneira:
 ```json
       {
-	"type":"xls",
 	"from":"categories",
 	"where":"created_at,between,$nowsub:30;$now"
       }
