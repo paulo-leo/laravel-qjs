@@ -75,3 +75,22 @@ use PauloLeo\LaravelQJS\QJS;
    }
     
 ```
+```php
+O método render é o núcleo da classe, responsável por processar a consulta que pode ser especificada em formato JSON ou como um array associativo. Seu primeiro parâmetro é a própria consulta, enquanto o segundo refere-se aos filtros aplicados. Esses filtros podem ser passados como um array associativo ou como uma string em formato JSON.
+
+O método render sempre retorna um objeto contendo a chave render, a qual pode assumir os valores true ou false. Quando true, indica que a renderização do relatório foi bem-sucedida, devolvendo, então, a chave data contendo os dados do relatório. Esses dados são organizados como um array indexado, onde cada índice contém um objeto com as informações a serem apresentadas no relatório.
+
+Aqui está um exemplo de uso:
+
+$query = array(
+    "from" => "users"
+);
+
+$filter = array(
+    array("name", "!=", "Carlos")
+);
+
+$qjs = new QJS;
+
+return response()->json($qjs->render($query, $filter));
+```
