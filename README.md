@@ -46,3 +46,32 @@ use PauloLeo\LaravelQJS\QJS;
   }
     
 ```
+
+## Convertendo em XLS(Excel) ou HTML
+
+```php
+
+   <?php
+
+    namespace App\Http\Controllers;
+
+    use PauloLeo\LaravelQJS\QJS;
+
+    public function render(Request $request){
+
+               $qjs = new QJS;
+               $query = $request->all();
+               $report = $qjs->render($query);
+              
+               if($request->type == 'xls' && $report->render) 
+                      return $qjs->toXLS($report->data);
+
+              if($request->type == 'html' && $report->render) 
+                      return $qjs->toHTML($report->data);
+
+            
+              return response()->json($report);    
+       }  
+   }
+    
+```
