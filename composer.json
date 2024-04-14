@@ -1,0 +1,15 @@
+{
+    "name": "paulo-leo/laravel-qjs",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PauloLeo\\LaravelQJS\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Paulo Leonardo da Silva Cassimiro",
+            "email": "pauloleonardo.rio@gmail.com"
+        }
+    ]
+}
