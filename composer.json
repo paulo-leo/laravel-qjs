@@ -1,6 +1,8 @@
 {
     "name": "paulo-leo/laravel-qjs",
+    "description": "Descrição do seu pacote",
     "license": "MIT",
+    "version": "1.0.0",
     "autoload": {
         "psr-4": {
             "PauloLeo\\LaravelQJS\\": "src/"
@@ -11,5 +13,7 @@
             "name": "Paulo Leonardo da Silva Cassimiro",
             "email": "pauloleonardo.rio@gmail.com"
         }
-    ]
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

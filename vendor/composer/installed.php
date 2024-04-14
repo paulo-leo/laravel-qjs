@@ -1,7 +1,7 @@
 <?php return array(
     'root' => array(
         'name' => 'paulo-leo/laravel-qjs',
-        'pretty_version' => '1.0.0+no-version-set',
+        'pretty_version' => '1.0.0',
         'version' => '1.0.0.0',
         'reference' => NULL,
         'type' => 'library',
@@ -11,7 +11,7 @@
     ),
     'versions' => array(
         'paulo-leo/laravel-qjs' => array(
-            'pretty_version' => '1.0.0+no-version-set',
+            'pretty_version' => '1.0.0',
             'version' => '1.0.0.0',
             'reference' => NULL,
             'type' => 'library',
