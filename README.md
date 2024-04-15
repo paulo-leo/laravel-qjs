@@ -307,7 +307,7 @@ A funcionalidade de junção de entidades no QJS assemelha-se aos JOINS do SQL, 
 ```json
 {
   "from": "users",
-  "rows:"users.id,users.name,categories.name as category",
+  "rows":"users.id,users.name,categories.name as category",
   "join":"categories,categories.id,users.category_id"
 }
 ```
