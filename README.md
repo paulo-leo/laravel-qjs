@@ -9,6 +9,7 @@ A ideia de construir o QJS usando o formato JSON foi inspirada no uso de estados
 Em resumo, o QJS pode ser considerado um protocolo para a criação de relatórios baseados em estados JSON.
 
 ## Uma consulta QJS pode ser interpretada da seguinte maneira:
+
 ```json
       {
 	"from":"categories",
@@ -152,24 +153,27 @@ Observação: Sempre que executar uma subconsulta, adicione o caractere $ antes 
 ```
 
 Você pode usar a declaração where para aplicar filtros ao seu relatórios:
+
 ```json
 {
   "from": "users",
   "rows": "id, name",
-  "where:"id,10",
+  "where:"id,10"
 }
 ```
 
 O comando acima busca o usuário ao qual o id é igual a "10", quando é omitido o operador, query considera como igual "=". Se você quiser passar um operador, você deverá escrever da seguinte maneira:
+
 ```json
 {
   "from": "users",
   "rows": "id, name",
-  "where:"id,!=,10",
+  "where:"id,!=,10"
 }
 ```
 
 Para passar mais de um filtro, você pode escrever da seguinte forma:
+
 ```json
 {
   "from": "users",
@@ -182,6 +186,7 @@ Para passar mais de um filtro, você pode escrever da seguinte forma:
 ```
 
 Para passar mais de um filtro, você pode escrever da seguinte forma:
+
 ```json
 {
   "from": "users",
@@ -194,6 +199,7 @@ Para passar mais de um filtro, você pode escrever da seguinte forma:
 ```
 
 O mesmo código pode ser escrito assim:
+
 ```json
 {
   "from": "users",
@@ -203,6 +209,7 @@ O mesmo código pode ser escrito assim:
 ```
 
 Se desejar passar um operador OR após o primeiro filtro, basta adicionar um quarto valor no filtro, um booleano true indicando que será aplicado o operador OR:
+
 ```json
 {
   "from": "users",
@@ -215,6 +222,7 @@ Se desejar passar um operador OR após o primeiro filtro, basta adicionar um qua
 
 Além disso, você pode usar os seguintes operadores para lidar com intervalos, valores nulos e listagem:
 Para intervalos entre dois valores, utilize o operador between:
+
 ```json
 {
   "from": "users",
@@ -226,6 +234,7 @@ Para intervalos entre dois valores, utilize o operador between:
 ```
 
 Para valores nulos:
+
 ```json
 {
   "from": "users",
@@ -237,6 +246,7 @@ Para valores nulos:
 ```
 
 Para uma lista de valores:
+
 ```json
 {
   "from": "users",
@@ -248,6 +258,7 @@ Para uma lista de valores:
 ```
 
 Se desejar negar a busca utilizando esses operadores, basta adicionar o caractere ! na frente do operador between, null e in:
+
 ```json
 {
   "from": "users",
@@ -261,6 +272,7 @@ Se desejar negar a busca utilizando esses operadores, basta adicionar o caracter
 ```
 
 Agora, se você declarou um método de agregação na row e deseja filtrar a agregação, pode usar a declaração having da seguinte forma:
+
 ```json
 {
   "from": "users",
@@ -273,8 +285,9 @@ Agora, se você declarou um método de agregação na row e deseja filtrar a agr
 ```
 
 Você também pode ordenar o seu relatório utilizando a declaração order. Aqui estão dois exemplos de como fazer isso:
-
 Ordenar por uma coluna em ordem descendente:
+
+```json
 {
   "from": "users",
   "order": "id,desc"
@@ -282,6 +295,7 @@ Ordenar por uma coluna em ordem descendente:
 ```
 
 Ordenar por múltiplas colunas, onde a primeira é ordenada em ordem descendente e a segunda em ordem ascendente:
+
 ```json
 {
   "from": "users",
@@ -290,7 +304,7 @@ Ordenar por múltiplas colunas, onde a primeira é ordenada em ordem descendente
 ```
 
 A funcionalidade de junção de entidades no QJS assemelha-se aos JOINS do SQL, utilizando três métodos fundamentais. Com base na teoria dos conjuntos, é possível empregar os métodos "join" para uma junção total, quando há referência entre as duas entidades; "left", quando a prioridade é dada à tabela à esquerda; e "right", quando a prioridade é atribuída à tabela à direita.
-
+```json
 {
   "from": "users",
   "rows:"users.id,users.name,categories.name as category",
