@@ -109,3 +109,217 @@ $qjs = new QJS;
 
 return response()->json($qjs->render($query, $filter));
 ```
+## Guia QJS
+
+Listar todos os usuários do sistema:
+```json
+{
+  "from": "users"
+}
+```
+
+Listar todos os usuários e trazer somente os campos id e name:
+```json
+{
+  "from": "users",
+  "rows": "id, name"
+}
+```
+
+Listar todos os usuários e trazer somente os campos id e name  e renomeia o campo name para cliente:
+```json
+{
+  "from": "users",
+  "rows": "id, name as cliente"
+}
+```
+
+Listar todos os usuários, trazendo apenas os campos id e name, e contar quantos existem:
+```json
+{
+  "from": "users",
+  "rows": "id, name, $count(*) as total",
+  "group":"id,name"
+}
+```
+
+Observação: Sempre que executar uma subconsulta, adicione o caractere $ antes do comando SQL ou da função de agregação desejada. O $ indica que você está realizando uma subconsulta ou uma função de agregação. Além disso, ao utilizar uma subconsulta com campos não agregados, é importante incluir o comando group e passar os campos não agregados nele para garantir que o resultado seja agrupado corretamente. No entanto, no exemplo abaixo, não é necessário usar o comando group, pois as regras do SQL se aplicam aqui:
+```json
+{
+  "from": "users",
+  "rows": "$count(*) as total"
+}
+```
+
+Você pode usar a declaração where para aplicar filtros ao seu relatórios:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where:"id,10",
+}
+```
+
+O comando acima busca o usuário ao qual o id é igual a "10", quando é omitido o operador, query considera como igual "=". Se você quiser passar um operador, você deverá escrever da seguinte maneira:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where:"id,!=,10",
+}
+```
+
+Para passar mais de um filtro, você pode escrever da seguinte forma:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where:[
+  ["id",">","1"]
+  ["name","like","a%"]
+  ],
+}
+```
+
+Para passar mais de um filtro, você pode escrever da seguinte forma:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":[
+    ["id", ">", "1"],
+    ["name", "like", "a%"]
+  ]
+}
+```
+
+O mesmo código pode ser escrito assim:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":["id,>,1","name,like,a%"]
+}
+```
+
+Se desejar passar um operador OR após o primeiro filtro, basta adicionar um quarto valor no filtro, um booleano true indicando que será aplicado o operador OR:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":[
+  ["id",">","1"],
+  ["name","like","a%",true]]
+}
+```
+
+Além disso, você pode usar os seguintes operadores para lidar com intervalos, valores nulos e listagem:
+Para intervalos entre dois valores, utilize o operador between:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":[
+    ["id","between","1|10"]
+  ]
+}
+```
+
+Para valores nulos:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":[
+    ["id","null"]
+  ]
+}
+```
+
+Para uma lista de valores:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":[
+    ["id","in",[1,2,3]]
+  ]
+}
+```
+
+Se desejar negar a busca utilizando esses operadores, basta adicionar o caractere ! na frente do operador between, null e in:
+```json
+{
+  "from": "users",
+  "rows": "id, name",
+  "where":[
+    ["id","!null"],
+	 ["id","!in",[1,2,3]],
+	  ["id","!between","1|10"] 
+  ]
+}
+```
+
+Agora, se você declarou um método de agregação na row e deseja filtrar a agregação, pode usar a declaração having da seguinte forma:
+```json
+{
+  "from": "users",
+  "rows": "id, name, $count(*) as total",
+  "group": "id, name",
+  "having": [
+    ["total", ">", "10"]
+  ]
+}
+```
+
+Você também pode ordenar o seu relatório utilizando a declaração order. Aqui estão dois exemplos de como fazer isso:
+
+Ordenar por uma coluna em ordem descendente:
+{
+  "from": "users",
+  "order": "id,desc"
+}
+```
+
+Ordenar por múltiplas colunas, onde a primeira é ordenada em ordem descendente e a segunda em ordem ascendente:
+```json
+{
+  "from": "users",
+  "order": ["id,desc","name"]
+}
+```
+
+A funcionalidade de junção de entidades no QJS assemelha-se aos JOINS do SQL, utilizando três métodos fundamentais. Com base na teoria dos conjuntos, é possível empregar os métodos "join" para uma junção total, quando há referência entre as duas entidades; "left", quando a prioridade é dada à tabela à esquerda; e "right", quando a prioridade é atribuída à tabela à direita.
+
+{
+  "from": "users",
+  "rows:"users.id,users.name,categories.name as category",
+  "join":"categories,categories.id,users.category_id"
+}
+```
+
+Para realizar múltiplas junções, segue-se a seguinte sintaxe:
+
+```json
+{
+  "from": "users",
+  "rows": "users.id, users.name, categories.name as category",
+  "left": [
+    "categories, categories.id, users.category_id",
+    "drivers, drivers.id, users.driver_id"
+  ]
+}
+```
+
+Alternativamente, pode-se utilizar a seguinte estrutura:
+
+```json
+{
+  "from": "users",
+  "rows": "users.id, users.name, categories.name as category",
+  "left": [
+    ["categories", "categories.id", "users.category_id"],
+    ["drivers", "drivers.id", "users.driver_id"]
+  ]
+}
+```
