@@ -3,6 +3,7 @@
 namespace PauloLeo\LaravelQJS;
 
 use PauloLeo\LaravelQJS\Replace;
+use Illuminate\Support\Facades\DB;
 
 class Filter
 {
