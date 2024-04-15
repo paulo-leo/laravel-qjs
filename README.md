@@ -158,7 +158,7 @@ Você pode usar a declaração where para aplicar filtros ao seu relatórios:
 {
   "from": "users",
   "rows": "id, name",
-  "where:"id,10"
+  "where":"id,10"
 }
 ```
 
@@ -168,7 +168,7 @@ O comando acima busca o usuário ao qual o id é igual a "10", quando é omitido
 {
   "from": "users",
   "rows": "id, name",
-  "where:"id,!=,10"
+  "where":"id,!=,10"
 }
 ```
 
@@ -178,7 +178,7 @@ Para passar mais de um filtro, você pode escrever da seguinte forma:
 {
   "from": "users",
   "rows": "id, name",
-  "where:[
+  "where":[
   ["id",">","1"],
   ["name","like","a%"]
   ]
