@@ -179,9 +179,9 @@ Para passar mais de um filtro, você pode escrever da seguinte forma:
   "from": "users",
   "rows": "id, name",
   "where:[
-  ["id",">","1"]
+  ["id",">","1"],
   ["name","like","a%"]
-  ],
+  ]
 }
 ```
 
