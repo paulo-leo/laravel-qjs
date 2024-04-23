@@ -10,8 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class QJS
 {
+
     public function render($data, $filters = false)
     {
+        return $this->build($data, $filters);
+    }
+
+    private function buildQuery($data, $filters)
+    {
+
         if (is_array($data)) {
             $data = json_encode($data);
         }
@@ -113,4 +120,150 @@ class QJS
     {
         return (new HTML)->render($data, $name);
     }
+
+    private function dataIn($key, $data)
+    {
+        if (!is_array($data)) {
+            $data = json_encode($data);
+        }
+        return $data[$key] ?? false;
+    }
+
+    public function build($data, $filters = false)
+    {
+        if (is_string($data)) {
+            $data = json_encode($data);
+        }
+
+        if (!$this->dataIn('query', $data)) {
+            $query = $this->buildQuery($data, $filters);
+            return $query;
+        }
+
+        $dataQuery = $this->querys($this->dataIn('query', $data), $filters);
+        $dataView = $this->view($this->dataIn('view', $data), $dataQuery);
+
+        return (object) [
+            'render'=>true,
+            'data'=>$dataView
+        ];
+    }
+
+    private function adpterQuery($querys)
+    {
+        foreach ($querys as $key => $val) {
+            if (is_string($val))
+                return ['query' => $querys];
+        }
+        return $querys;
+    }
+
+    private function querys($querys, $filters)
+    {
+        $querys = $this->adpterQuery($querys);
+        $data = array();
+        foreach ($querys as $query => $build) {
+            $data[$query] = $this->buildQuery($querys[$query], $filters);
+        }
+        return $data;
+
+    }
+
+    private function toArray($datas)
+    {
+
+        $data = array();
+        foreach ($datas as $key => $value) {
+            $data[$key] = $value->render ? $value->data : [];
+        }
+        return $data;
+
+    }
+
+    private function countMax($arrays)
+    {
+        $max = 0;
+        foreach ($arrays as $key => $val) {
+            $size = count($val);
+            if ($size > $max)
+                $max = $size;
+        }
+        return $max;
+    }
+
+    private function view($views, $data)
+    {
+        $data = $this->toArray($data);
+        $max = $this->countMax($data);
+        $view = array();
+        foreach ($views as $key => $value) {
+            if (in_array($key, ['header', 'footer'])) {
+                $view[$key] = $this->row($value, $data);
+            } else {
+
+                $call = $this->getKeyValue($key);
+
+                if ($call->key == 'row') {
+                    $view[$call->name] = $this->row($value, $data);
+                }
+
+                if ($call->key == 'for' && $call->value) {
+                    $view[$call->name] = $this->rows($value, $data[$call->value]);
+                }
+            }
+        }
+        return $view;
+    }
+
+    private function row($values, $datas)
+    {
+        if (is_string($values))
+            $values = [$values];
+        $view = array();
+        $i = 0;
+        foreach ($values as $data) {
+
+            $point = explode('.', $data);
+            if (isset($point[1])) {
+                $v = (array) $datas[$point[0]][0] ?? null;
+                $view[] = $v ? ($v[$point[1]] ?? null) : null;
+            } else {
+                $view[] = $point[0] ?? null;
+            }
+        }
+        return $view;
+    }
+
+    private function rows($values, $datas)
+    {
+        if (is_string($values))
+            $values = [$values];
+        $view = array();
+        $i = 0;
+        foreach ($datas as $data) {
+            $data = (array) $data;
+            foreach ($values as $value) {
+                $view[$i][$value] = $data[$value] ?? null;
+            }
+            $i++;
+        }
+        return $view;
+    }
+
+    private function getKeyValue($key)
+    {
+        $key = explode('@', $key);
+        $func = $key[0];
+        $param = $key[1] ?? null;
+        $param = explode(' as ', $param);
+        $name = $param[1] ?? $param[0];
+        $param = trim($param[0]);
+        return (object) [
+            'key' => $func,
+            'value' => $param,
+            'name' => $name
+        ];
+    }
+
+
 }
