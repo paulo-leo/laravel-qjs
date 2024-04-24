@@ -12,8 +12,22 @@ class QJS
 {
 
     public function render($data, $filters = false)
-    {
-        return $this->build($data, $filters);
+    {  
+        try {
+            $data = $this->build($data, $filters);
+            $data->query = true;
+            if (is_object($data->data)) {
+                $data->query = false;
+                $data->data = $data->data->toArray();
+            }
+            //dd($data);
+            return $data;
+        } catch (\Exception $e) {
+            return (object) array(
+                'render'=>false,
+                'error'=>'Erro na query QJS informada.'
+            );
+        }
     }
 
     private function buildQuery($data, $filters)
@@ -121,13 +135,23 @@ class QJS
         return (new HTML)->render($data, $name);
     }
 
-    private function dataIn($key, $data)
+    public function dataIn($key, $data)
     {
-        if (!is_array($data)) {
-            $data = json_encode($data);
+        if (is_object($data)) {
+            $data = get_object_vars($data);
         }
-        return $data[$key] ?? false;
+
+        if (!is_array($data)) {
+            $data = json_decode($data, true);
+        }
+
+        if (is_array($data)) {
+            return $data[$key] ?? false;
+        } else {
+            return false;
+        }
     }
+
 
     public function build($data, $filters = false)
     {
@@ -135,17 +159,24 @@ class QJS
             $data = json_encode($data);
         }
 
-        if (!$this->dataIn('query', $data)) {
+
+        if (!is_array($this->dataIn('query', $data))) {
             $query = $this->buildQuery($data, $filters);
             return $query;
         }
 
+
         $dataQuery = $this->querys($this->dataIn('query', $data), $filters);
-        $dataView = $this->view($this->dataIn('view', $data), $dataQuery);
+
+        $dataView = $this->dataIn('view', $data);
+        //dd($dataView);
+        $dataView = $dataView ? $this->view($dataView, $dataQuery) : $dataQuery;
+
+
 
         return (object) [
-            'render'=>true,
-            'data'=>$dataView
+            'render' => true,
+            'data' => $dataView
         ];
     }
 
@@ -191,8 +222,47 @@ class QJS
         return $max;
     }
 
+
+    private function viewString($text)
+    {
+        $newText = preg_replace_callback(
+            '/\{([^{}]+)\}/',
+            function ($match) {
+                // Divide as palavras dentro das chaves e adiciona aspas simples
+                $words = explode(',', $match[1]);
+                foreach ($words as &$word) {
+                    $word = "\"" . trim($word) . "\"";
+                }
+                return '{' . implode(',', $words) . '}';
+            },
+            $text
+        );
+
+        $newText = str_ireplace('@row', '@row()', $newText);
+        $newText = str_ireplace('@header', '"header"', $newText);
+        $newText = str_ireplace('@for', '"for', $newText);
+        $newText = str_ireplace('@row', '"row', $newText);
+
+
+        $newText = str_ireplace('{', ':[', $newText);
+        $newText = str_ireplace('}', '],', $newText);
+        $newText = str_ireplace('(', '@', $newText);
+        $newText = str_ireplace(')', '"', $newText);
+        $newText = str_ireplace('  ', ' ', $newText);
+        $newText = str_ireplace(', ', ',', $newText);
+        $newText = substr($newText, 0, -1);
+        $array = json_decode('{' . $newText . '}', true);
+        return $array;
+    }
+
+
     private function view($views, $data)
     {
+
+        if (is_string($views)) {
+            $views = $this->viewString($views);
+        }
+
         $data = $this->toArray($data);
         $max = $this->countMax($data);
         $view = array();
