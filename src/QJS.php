@@ -10,9 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class QJS
 {
-
     public function render($data, $filters = false)
-    {  
+    {
         try {
             $data = $this->build($data, $filters);
             $data->query = true;
@@ -24,8 +23,8 @@ class QJS
             return $data;
         } catch (\Exception $e) {
             return (object) array(
-                'render'=>false,
-                'error'=>'Erro na query QJS informada.'
+                'render' => false,
+                'error' => 'Erro na query QJS informada.'
             );
         }
     }
@@ -238,18 +237,23 @@ class QJS
             $text
         );
 
-        $newText = str_ireplace('@row', '@row()', $newText);
-        $newText = str_ireplace('@header', '"header"', $newText);
-        $newText = str_ireplace('@for', '"for', $newText);
-        $newText = str_ireplace('@row', '"row', $newText);
+        $funcs = [
+            '#header',
+            '#footer',
+            '#for',
+            '#row'
+        ];
+        $newFuncs = [
+            '"header',
+            '"footer',
+            '"for',
+            '"row'
+        ];
 
-
-        $newText = str_ireplace('{', ':[', $newText);
+        $newText = str_ireplace($funcs, $newFuncs, $newText);
+        $newText = str_ireplace('{', '":[', $newText);
         $newText = str_ireplace('}', '],', $newText);
-        $newText = str_ireplace('(', '@', $newText);
-        $newText = str_ireplace(')', '"', $newText);
-        $newText = str_ireplace('  ', ' ', $newText);
-        $newText = str_ireplace(', ', ',', $newText);
+
         $newText = substr($newText, 0, -1);
         $array = json_decode('{' . $newText . '}', true);
         return $array;
@@ -334,6 +338,4 @@ class QJS
             'name' => $name
         ];
     }
-
-
 }
