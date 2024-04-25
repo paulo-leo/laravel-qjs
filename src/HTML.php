@@ -65,13 +65,23 @@ class HTML
         return $table;
     }
 
-    public function render($data, $name = 'report-system')
+    public function render($data)
     {
         header('Content-Type: text/html');
         header('Cache-Control: no-cache');
 
-        echo "<table border='1'>{$this->body($data)}</tbody></table>";
-
+        try {
+          echo "<table border='1'>{$this->body($data)}</table>";
+        } catch (\Exception $e) {
+            echo "<table border='1'>
+                  <tr>
+                      <td>Code</td><td>Message</td>
+                  </tr>
+                  <tr>
+                      <td>{$e->getCode()}</td><td>{$e->getMessage()}</td>
+                  </tr>
+                   </table>";
+        }
         exit();
     }
 }
